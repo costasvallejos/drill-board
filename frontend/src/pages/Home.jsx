@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import CategorySelector from '../components/CategorySelector'
-import RinkVisualizer from '../components/RinkVisualizer'
+import AnimatedDrill from '../components/AnimatedDrill'  // import animation wrapper
 import DrillDescriptionBox from '../components/DrillDescriptionBox'
 
 function Home() {
@@ -22,10 +22,12 @@ function Home() {
         </p>
       </div>
 
-      {/* If a category is selected, show visualizer + description side-by-side */}
       {selectedCategory && (
         <div style={{ display: 'flex', gap: '2rem' }}>
-          <RinkVisualizer />
+          {/* This shows rink + animation */}
+          <AnimatedDrill />
+
+          {/* Drill details */}
           <DrillDescriptionBox />
         </div>
       )}
