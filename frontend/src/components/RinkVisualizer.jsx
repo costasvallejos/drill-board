@@ -14,10 +14,10 @@ const hashOffsetY = 1.3;
 const hashStartOffset = faceOffRadius;
 
 const nonCentreFaceOffs = [
-  { cx: 13, cy: 15 },
-  { cx: 37, cy: 15 },
-  { cx: 13, cy: 85 },
-  { cx: 37, cy: 85 },
+  { cx: 13, cy: 17 },
+  { cx: 37, cy: 17 },
+  { cx: 13, cy: 83 },
+  { cx: 37, cy: 83 },
 ];
 
 const neutralZoneDots = [
