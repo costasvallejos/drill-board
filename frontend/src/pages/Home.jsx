@@ -23,11 +23,11 @@ function Home() {
       </div>
 
       {selectedCategory && (
-        <div style={{ display: 'flex', gap: '2rem' }}>
-          {/* This shows rink + animation */}
+        <div style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start' }}>
+          {/* AnimatedDrill keeps its own width/height */}
           <AnimatedDrill />
 
-          {/* Drill details */}
+          {/* DrillDescriptionBox keeps its own width/height */}
           <DrillDescriptionBox />
         </div>
       )}

@@ -1,20 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
 import RinkVisualizer from './RinkVisualizer';
 
+// Use rink constants from your constants file or define them here
 const WIDTH = 50;
 const HEIGHT = 100;
 
-// Define the drill path points
-const pathPoints = [
-  { x: 13, y: 17 },  // Start
-  { x: 25, y: 50 },  // Middle point (change direction)
-  { x: 37, y: 40 },  // End
+// The figure eight path moving through rink dots
+const figureEightPoints = [
+  { x: 13, y: 83 },  // bottom-left dot
+  { x: 13, y: 17 },  // top-left dot
+  { x: 25, y: 50 },  // center dot
+  { x: 37, y: 17 },  // top-right dot
+  { x: 37, y: 83 },  // bottom-right dot
+  { x: 25, y: 50 },  // center dot (return)
 ];
 
-const segmentDuration = 1500; // duration per segment (ms)
+const segmentDuration = 1200; // ms per segment
 
 function AnimatedDrill() {
-  const [pos, setPos] = useState(pathPoints[0]);
+  const [pos, setPos] = useState(figureEightPoints[0]);
   const segmentIndexRef = useRef(0);
   const startTimeRef = useRef(null);
 
@@ -24,12 +28,14 @@ function AnimatedDrill() {
       const elapsed = time - startTimeRef.current;
 
       const currentIndex = segmentIndexRef.current;
-      const from = pathPoints[currentIndex];
-      const to = pathPoints[currentIndex + 1];
+      const from = figureEightPoints[currentIndex];
+      const to = figureEightPoints[currentIndex + 1];
 
       if (!to) {
-        // End of path, stop animation
-        setPos(pathPoints[pathPoints.length - 1]);
+        // Loop back to start
+        segmentIndexRef.current = 0;
+        startTimeRef.current = null;
+        requestAnimationFrame(animate);
         return;
       }
 
@@ -43,7 +49,6 @@ function AnimatedDrill() {
       if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
-        // Move to next segment
         segmentIndexRef.current += 1;
         startTimeRef.current = null;
         requestAnimationFrame(animate);
@@ -55,12 +60,11 @@ function AnimatedDrill() {
 
   return (
     <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} style={{ width: '100%', height: 'auto' }}>
-      {/* Rink background */}
       <RinkVisualizer />
 
-      {/* Draw the full path as a polyline */}
+      {/* Draw polyline for the path */}
       <polyline
-        points={pathPoints.map(p => `${p.x},${p.y}`).join(' ')}
+        points={figureEightPoints.map(p => `${p.x},${p.y}`).join(' ')}
         fill="none"
         stroke="black"
         strokeWidth="0.3"

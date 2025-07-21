@@ -1,31 +1,18 @@
-const WIDTH = 50;
-const HEIGHT = 100;
-
-const blueLineStroke = 0.8;
-const centerLineStroke = 0.8;
-const faceOffRadius = 6;
-const goalCreaseRadius = 4;
-
-const topBlueY = HEIGHT * 0.33;
-const bottomBlueY = HEIGHT * 0.67;
-
-const hashMarkLength = 1.2;
-const hashOffsetY = 1.3;
-const hashStartOffset = faceOffRadius;
-
-const nonCentreFaceOffs = [
-  { cx: 13, cy: 17 },
-  { cx: 37, cy: 17 },
-  { cx: 13, cy: 83 },
-  { cx: 37, cy: 83 },
-];
-
-const neutralZoneDots = [
-  { cx: 13, cy: topBlueY + 3 },
-  { cx: 37, cy: topBlueY + 3 },
-  { cx: 13, cy: bottomBlueY - 3 },
-  { cx: 37, cy: bottomBlueY - 3 },
-];
+import {
+  WIDTH,
+  HEIGHT,
+  blueLineStroke,
+  centerLineStroke,
+  faceOffRadius,
+  goalCreaseRadius,
+  topBlueY,
+  bottomBlueY,
+  hashMarkLength,
+  hashOffsetY,
+  hashStartOffset,
+  nonCentreFaceOffs,
+  neutralZoneDots,
+} from '../constants/rinkConstants';
 
 function RinkOutline() {
   return (
@@ -77,40 +64,26 @@ function FaceOffDot({ cx, cy, size = 0.5, fill = 'red' }) {
 function HashMarks({ cx, cy }) {
   return (
     <g>
-      {/* Left side hash marks */}
-      <line
-        x1={cx - hashStartOffset}
-        y1={cy - hashOffsetY}
-        x2={cx - hashStartOffset - hashMarkLength}
-        y2={cy - hashOffsetY}
-        stroke="red"
-        strokeWidth="0.3"
-      />
-      <line
-        x1={cx - hashStartOffset}
-        y1={cy + hashOffsetY}
-        x2={cx - hashStartOffset - hashMarkLength}
-        y2={cy + hashOffsetY}
-        stroke="red"
-        strokeWidth="0.3"
-      />
-      {/* Right side hash marks */}
-      <line
-        x1={cx + hashStartOffset}
-        y1={cy - hashOffsetY}
-        x2={cx + hashStartOffset + hashMarkLength}
-        y2={cy - hashOffsetY}
-        stroke="red"
-        strokeWidth="0.3"
-      />
-      <line
-        x1={cx + hashStartOffset}
-        y1={cy + hashOffsetY}
-        x2={cx + hashStartOffset + hashMarkLength}
-        y2={cy + hashOffsetY}
-        stroke="red"
-        strokeWidth="0.3"
-      />
+      {[-1, 1].map((dir) => (
+        <g key={dir}>
+          <line
+            x1={cx - dir * hashStartOffset}
+            y1={cy - hashOffsetY}
+            x2={cx - dir * (hashStartOffset + hashMarkLength)}
+            y2={cy - hashOffsetY}
+            stroke="red"
+            strokeWidth="0.3"
+          />
+          <line
+            x1={cx - dir * hashStartOffset}
+            y1={cy + hashOffsetY}
+            x2={cx - dir * (hashStartOffset + hashMarkLength)}
+            y2={cy + hashOffsetY}
+            stroke="red"
+            strokeWidth="0.3"
+          />
+        </g>
+      ))}
     </g>
   );
 }
@@ -129,66 +102,38 @@ function RinkVisualizer() {
     >
       <RinkOutline />
 
-      {/* Red goal lines - shifted to align with flat part of rounded rink */}
+      {/* Goal Lines */}
       <line x1="0" y1="7" x2={WIDTH} y2="7" stroke="red" strokeWidth={centerLineStroke} />
       <line x1="0" y1="93" x2={WIDTH} y2="93" stroke="red" strokeWidth={centerLineStroke} />
 
-      {/* Blue lines */}
-      <line
-        x1="0"
-        y1={topBlueY}
-        x2={WIDTH}
-        y2={topBlueY}
-        stroke="blue"
-        strokeWidth={blueLineStroke}
-      />
-      <line
-        x1="0"
-        y1={bottomBlueY}
-        x2={WIDTH}
-        y2={bottomBlueY}
-        stroke="blue"
-        strokeWidth={blueLineStroke}
-      />
+      {/* Blue Lines */}
+      <line x1="0" y1={topBlueY} x2={WIDTH} y2={topBlueY} stroke="blue" strokeWidth={blueLineStroke} />
+      <line x1="0" y1={bottomBlueY} x2={WIDTH} y2={bottomBlueY} stroke="blue" strokeWidth={blueLineStroke} />
 
-      {/* Red centre line */}
-      <line
-        x1="0"
-        y1={HEIGHT / 2}
-        x2={WIDTH}
-        y2={HEIGHT / 2}
-        stroke="red"
-        strokeWidth={centerLineStroke}
-      />
+      {/* Centre Red Line */}
+      <line x1="0" y1={HEIGHT / 2} x2={WIDTH} y2={HEIGHT / 2} stroke="red" strokeWidth={centerLineStroke} />
 
-      {/* Goalie creases (also adjusted) */}
+      {/* Goal Creases */}
       <GoalCrease y={7} />
       <GoalCrease y={93} />
 
-      {/* Face-off circles */}
+      {/* Face-off Circles */}
       {[...nonCentreFaceOffs, { cx: 25, cy: 50 }].map(({ cx, cy }, i) => (
-        <FaceOffCircle
-          key={i}
-          cx={cx}
-          cy={cy}
-          isCenter={cx === 25 && cy === 50}
-        />
+        <FaceOffCircle key={i} cx={cx} cy={cy} isCenter={cx === 25 && cy === 50} />
       ))}
 
-      {/* Face-off dots */}
+      {/* Dots */}
       {nonCentreFaceOffs.map(({ cx, cy }, i) => (
-        <FaceOffDot key={i} cx={cx} cy={cy} />
+        <FaceOffDot key={`dot-${i}`} cx={cx} cy={cy} />
       ))}
       <FaceOffDot cx={25} cy={50} size={0.5} fill="blue" />
-
-      {/* Neutral zone face-off dots */}
       {neutralZoneDots.map(({ cx, cy }, i) => (
         <FaceOffDot key={`neutral-${i}`} cx={cx} cy={cy} />
       ))}
 
-      {/* Hash marks outside the face-off circles */}
+      {/* Hash Marks */}
       {nonCentreFaceOffs.map(({ cx, cy }, i) => (
-        <HashMarks key={i} cx={cx} cy={cy} />
+        <HashMarks key={`hash-${i}`} cx={cx} cy={cy} />
       ))}
     </svg>
   );
