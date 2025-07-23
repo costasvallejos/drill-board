@@ -1,4 +1,4 @@
-const categories = ['Skating', 'Passing', 'Shooting', 'Teamwork'];
+const categories = ['Shooting', 'Skating', 'Passing'];
 
 function CategorySelector({ selectedCategory, onSelectCategory }) {
   return (
