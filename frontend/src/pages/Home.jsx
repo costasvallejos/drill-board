@@ -7,17 +7,20 @@ import axios from 'axios'
 function Home() {
   const [selectedCategory, setSelectedCategory] = useState(null)
   const [drillDescription, setDrillDescription] = useState('')
+  const [drillPath, setDrillPath] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
   useEffect(() => {
     if (!selectedCategory) return
     setDrillDescription('')
+    setDrillPath([])
     setError(null)
     setLoading(true)
     axios.post('/api/generate-drill', { category: selectedCategory })
       .then(res => {
-        setDrillDescription(res.data.result || 'No description returned.')
+        setDrillDescription(res.data.description || 'No description returned.')
+        setDrillPath(Array.isArray(res.data.path) ? res.data.path : [])
       })
       .catch(() => {
         setError('Failed to fetch drill description.')
@@ -41,7 +44,7 @@ function Home() {
       </div>
       {selectedCategory && (
         <div style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start' }}>
-          <AnimatedDrill />
+          <AnimatedDrill path={drillPath} />
           <DrillDescriptionBox
             description={
               loading ? 'Loading...' : error ? error : drillDescription
