@@ -59,7 +59,7 @@ function AnimatedDrill() {
   }, []);
 
   return (
-    <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} style={{ width: '100%', height: 'auto' }}>
+    <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} style={{ width: '100%', maxWidth: '400px', minWidth: '250px', height: 'auto', flex: '0 1 400px' }}>
       <RinkVisualizer />
 
       {/* Draw polyline for the path */}
