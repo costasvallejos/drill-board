@@ -87,6 +87,7 @@ body {
   min-height: 400px;
   width: 100%;
   max-width: 500px;
+  height: 375px;
   margin: 0 auto;
   background: rgba(26, 34, 58, 0.85);
   border: 1.5px solid rgba(30, 58, 138, 0.3);

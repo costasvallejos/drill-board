@@ -4,6 +4,7 @@ import CategorySelector from '../components/CategorySelector'
 import AnimatedDrill from '../components/AnimatedDrill'
 import DrillDescriptionBox from '../components/DrillDescriptionBox'
 import axios from 'axios'
+import RinkVisualizer from '../components/RinkVisualizer'
 
 function Home() {
   const [selectedCategory, setSelectedCategory] = useState(null)
@@ -96,7 +97,11 @@ function Home() {
             <div className="home-flex-row">
               <div className="home-flex-item">
                 <div className="home-card">
-                  <AnimatedDrill path={drillPath} player2Path={player2Path} puckPath={puckPath} />
+                  {Array.isArray(drillPath) && drillPath.length > 1 ? (
+                    <AnimatedDrill path={drillPath} player2Path={player2Path} puckPath={puckPath} />
+                  ) : (
+                    <RinkVisualizer />
+                  )}
                 </div>
               </div>
               <div className="home-flex-item">

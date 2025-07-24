@@ -94,7 +94,7 @@ function RinkVisualizer() {
       viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
       style={{
         width: '100%',
-        height: 'auto',
+        height: '100%',
         backgroundColor: '#e0f7ff',
         border: '2px solid #ccc',
         borderRadius: '8px',
