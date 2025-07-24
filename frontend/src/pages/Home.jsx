@@ -53,7 +53,8 @@ function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-200 font-sans py-8 px-2 flex flex-col items-center justify-center">
+    <div className="home-bg">
+      <div className="home-overlay"></div>
       <AnimatePresence initial={false} custom={direction}>
         {!showDrill && !selectedCategory && (
           <motion.div
@@ -62,10 +63,10 @@ function Home() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -100, opacity: 0 }}
             transition={{ duration: 0.5, ease: 'easeInOut' }}
-            className="w-full max-w-xl mx-auto"
+            className="home-center"
           >
-            <h1 className="text-4xl font-extrabold text-center mb-8 text-blue-900 drop-shadow">Hockey Drills App</h1>
-            <div className="flex flex-col items-center mb-8">
+            <div className="home-card">
+              <h1 className="home-title">Hockey Drills App</h1>
               <CategorySelector
                 selectedCategory={selectedCategory}
                 onSelectCategory={cat => {
@@ -73,9 +74,7 @@ function Home() {
                   setSelectedCategory(cat)
                 }}
               />
-              <p className="text-lg text-gray-700 mt-2">
-                Please select a category to see drills.
-              </p>
+              <p className="home-desc">Please select a category to see drills.</p>
             </div>
           </motion.div>
         )}
@@ -86,22 +85,22 @@ function Home() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ duration: 0.5, ease: 'easeInOut' }}
-            className="w-full max-w-5xl mx-auto"
+            className="home-center"
           >
             <button
               onClick={handleBack}
-              className="mb-6 px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
+              className="home-back"
             >
               ← Back to Categories
             </button>
-            <div className="flex flex-row gap-8 items-stretch justify-center w-full overflow-x-auto">
-              <div className="flex-1 flex items-center justify-center min-w-0">
-                <div className="w-full max-w-md min-h-[400px] flex items-center justify-center bg-white rounded-xl shadow-lg p-4">
+            <div className="home-flex-row">
+              <div className="home-flex-item">
+                <div className="home-card">
                   <AnimatedDrill path={drillPath} player2Path={player2Path} puckPath={puckPath} />
                 </div>
               </div>
-              <div className="flex-1 flex items-center justify-center min-w-0">
-                <div className="w-full max-w-md min-h-[400px] flex items-center justify-center bg-gradient-to-br from-orange-50 to-yellow-100 rounded-xl shadow-lg p-4 border border-orange-200">
+              <div className="home-flex-item">
+                <div className="home-card">
                   <DrillDescriptionBox
                     description={
                       loading ? 'Loading...' : error ? error : drillDescription
