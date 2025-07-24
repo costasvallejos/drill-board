@@ -1,25 +1,36 @@
-import { motion, AnimatePresence } from 'framer-motion'
+import { useEffect, useState } from 'react'
 
 function DrillDescriptionBox({ description }) {
-  // Split description into sentences or paragraphs for staggered animation
-  const parts = (description || '').split(/(?<=[.!?])\s+/)
+  const [displayedCount, setDisplayedCount] = useState(0);
+
+  useEffect(() => {
+    setDisplayedCount(0);
+    if (!description) return;
+    let i = 0;
+    const interval = setInterval(() => {
+      i++;
+      setDisplayedCount(i);
+      if (i >= description.length) clearInterval(interval);
+    }, 35); // slower typing
+    return () => clearInterval(interval);
+  }, [description]);
+
   return (
     <div className="flex-1 min-h-[300px] flex flex-col items-center justify-center max-w-md w-full">
       <h2 className="text-2xl font-bold text-orange-700 mb-4 text-center drop-shadow">Drill Description</h2>
-      <div className="text-lg text-gray-800 text-center whitespace-pre-line">
-        <AnimatePresence>
-          {parts.map((part, i) => (
-            <motion.span
-              key={i}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.25, duration: 0.6, ease: 'easeOut' }}
-              className="block mb-2"
-            >
-              {part}
-            </motion.span>
-          ))}
-        </AnimatePresence>
+      <div className="text-lg text-center whitespace-pre-line" style={{ color: '#fff' }}>
+        {Array.from(description || '').map((char, i) => (
+          <span
+            key={i}
+            style={{
+              opacity: i < displayedCount ? 1 : 0,
+              transition: 'opacity 0.25s',
+              display: 'inline',
+            }}
+          >
+            {char}
+          </span>
+        ))}
       </div>
     </div>
   )
