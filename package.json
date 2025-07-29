@@ -1,0 +1,15 @@
+{
+  "name": "drill-board",
+  "version": "1.0.0",
+  "description": "Hockey drills app with React frontend and Express backend",
+  "scripts": {
+    "dev": "concurrently \"cd backend && npm start\" \"cd frontend && npm run dev\"",
+    "install-all": "npm install && cd frontend && npm install && cd ../backend && npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+} 
