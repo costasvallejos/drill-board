@@ -5,6 +5,8 @@ import AnimatedDrill from '../components/AnimatedDrill'
 import DrillDescriptionBox from '../components/DrillDescriptionBox'
 import axios from 'axios'
 import RinkVisualizer from '../components/RinkVisualizer'
+import ShootingDrillAnimation from '../components/ShootingDrillAnimation'
+import PassingDrillAnimation from '../components/PassingDrillAnimation'
 
 function Home() {
   const [selectedCategory, setSelectedCategory] = useState(null)
@@ -31,7 +33,32 @@ function Home() {
     axios.post('/api/generate-drill', { category: selectedCategory })
       .then(res => {
         setDrillDescription(res.data.description || 'No description returned.')
-        setDrillPath(Array.isArray(res.data.path) ? res.data.path : [])
+        setDrillPath(() => {
+          const playerPath = Array.isArray(res.data.path) ? res.data.path : [];
+          const puckPath = Array.isArray(res.data.puckPath) ? res.data.puckPath : [];
+          let shotIndex = null;
+          let netLocation = puckPath.length ? puckPath[puckPath.length - 1] : null;
+          // Prefer backend-provided shotLocation if present
+          if (res.data.shotLocation && typeof res.data.shotLocation.x === 'number' && typeof res.data.shotLocation.y === 'number') {
+            // Find the index in playerPath that matches shotLocation
+            shotIndex = playerPath.findIndex(p => p.x === res.data.shotLocation.x && p.y === res.data.shotLocation.y);
+            if (shotIndex === -1) shotIndex = null;
+          }
+          // Fallback: infer shotIndex as before
+          if (shotIndex === null && playerPath.length && puckPath.length) {
+            for (let i = 0; i < Math.min(playerPath.length, puckPath.length); i++) {
+              if (playerPath[i].x !== puckPath[i].x || playerPath[i].y !== puckPath[i].y) {
+                shotIndex = i;
+                break;
+              }
+            }
+            if (shotIndex === null) shotIndex = Math.min(playerPath.length, puckPath.length) - 1;
+          }
+          const drillPath = [...playerPath];
+          drillPath.shotIndex = shotIndex;
+          drillPath.netLocation = netLocation;
+          return drillPath;
+        });
         setPlayer2Path(Array.isArray(res.data.player2Path) ? res.data.player2Path : [])
         setPuckPath(Array.isArray(res.data.puckPath) ? res.data.puckPath : [])
       })
@@ -97,7 +124,11 @@ function Home() {
             <div className="home-flex-row">
               <div className="home-flex-item">
                 <div className="home-card">
-                  {Array.isArray(drillPath) && drillPath.length > 1 ? (
+                  {selectedCategory === 'Shooting' && Array.isArray(drillPath) && drillPath.length >= 1 && typeof drillPath.shotIndex === 'number' && drillPath.netLocation ? (
+                    <ShootingDrillAnimation playerPath={drillPath} shotIndex={drillPath.shotIndex} netLocation={drillPath.netLocation} />
+                  ) : selectedCategory === 'Passing' && Array.isArray(drillPath) && drillPath.length >= 1 && Array.isArray(player2Path) && player2Path.length >= 1 && Array.isArray(puckPath) && puckPath.length >= 2 ? (
+                    <PassingDrillAnimation player1Path={drillPath} player2Path={player2Path} puckPath={puckPath} />
+                  ) : Array.isArray(drillPath) && drillPath.length > 1 ? (
                     <AnimatedDrill path={drillPath} player2Path={player2Path} puckPath={puckPath} />
                   ) : (
                     <RinkVisualizer />
