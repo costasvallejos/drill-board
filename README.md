@@ -56,8 +56,7 @@ Interactive hockey drill generator with AI-powered drill creation and animations
    This will start both the backend (Express server) and frontend (React dev server) simultaneously.
 
 5. **Open the application in your web browser:**
-   - Frontend: http://localhost:5173
-   - Backend: http://localhost:5050
+   - Navigate to: http://localhost:5173
 
 ## Usage
 
